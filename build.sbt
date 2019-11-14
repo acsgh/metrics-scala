@@ -21,7 +21,7 @@ lazy val commonSettings = Seq(
     commitNextVersion,
     pushChanges
   ),
-  crossScalaVersions := List("2.12.10", "2.13.1"),
+  crossScalaVersions := List("2.13.1"),
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   libraryDependencies ++= Seq(
