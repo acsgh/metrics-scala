@@ -22,15 +22,17 @@ trait Gauge extends Metric {
 }
 
 case class Counter() extends Metric with Reset {
-  private val count = new AtomicLong(0)
+  private val _count = new AtomicLong(0)
 
-  def inc(delta: Long = 0): Unit = count.addAndGet(delta)
+  def count: Long = _count.get()
 
-  def dec(delta: Long = 0): Unit = count.addAndGet(-delta)
+  def inc(delta: Long = 1): Unit = _count.addAndGet(delta)
 
-  override def reset(): Unit = count.set(0)
+  def dec(delta: Long = 1): Unit = _count.addAndGet(-delta)
 
-  override def values: Map[String, AnyVal] = Map("count" -> count.get())
+  override def reset(): Unit = _count.set(0)
+
+  override def values: Map[String, AnyVal] = Map("count" -> _count.get())
 }
 
 case class MetricEntry

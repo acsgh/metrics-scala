@@ -10,9 +10,9 @@ object Snapshot {
     val sortedValues = values.map(_.value).sorted
 
     val count: Long = sortedValues.size
-    val min: Long = sortedValues.min
-    val max: Long = sortedValues.max
-    val sum: Long = sortedValues.sum
+    val min: Long = if (count > 0) sortedValues.min else 0
+    val max: Long = if (count > 0) sortedValues.max else 0
+    val sum: Long = if (count > 0) sortedValues.sum else 0
     val mean: Double = if (count > 0) (sum.toDouble / count).scale() else 0
     val stdDev: Double = {
       if (count > 0) {
@@ -27,19 +27,29 @@ object Snapshot {
       assert(percentile > 0)
       assert(percentile < 100)
 
-      val index: Int = (percentile * count).toInt
-      sortedValues(index)
+      if (count > 0) {
+        val index: Int = (percentile * (count -1)).toInt
+        sortedValues(index)
+      } else {
+        0
+      }
     }
 
     def rate(seconds: Long): Double = {
       assert(seconds > 0)
 
-      val totalSeconds = ((to.toEpochMilli - from.toEpochMilli) / 1000).toInt
+      if (count > 0) {
+        val totalSeconds = ((to.toEpochMilli - from.toEpochMilli) / 1000).toInt
 
-      if (seconds < totalSeconds) {
-        values.count(_.timestamp.compareTo(from.plusSeconds(seconds)) <= 0)
+        if (totalSeconds == 0) {
+          0
+        } else if (seconds < totalSeconds) {
+          (seconds * count) / totalSeconds
+        } else {
+          values.count(_.timestamp.compareTo(from.plusSeconds(seconds)) <= 0)
+        }
       } else {
-        (seconds * count) / totalSeconds
+        0
       }
     }
 
@@ -52,8 +62,8 @@ object Snapshot {
       sum,
       mean,
       stdDev,
-      List(60, 300, 900).map(s => s.toLong -> rate(s)).toMap,
-      List(5, 25, 50, 75, 90, 99, 99.5).map(p => p -> percentile(p)).toMap
+      List[Long](60, 300, 900).map(s => s -> rate(s)).toMap,
+      List[Double](5, 25, 50, 75, 90, 99, 99.5).map(p => p -> percentile(p)).toMap
     )
   }
 }
@@ -101,7 +111,7 @@ case class Snapshot
       "mean-rate" -> rateMean,
       "1m-rate" -> rate(60).getOrElse(0),
       "5m-rate" -> rate(300).getOrElse(0),
-      "5m-rate" -> rate(900).getOrElse(0)
+      "15m-rate" -> rate(900).getOrElse(0)
     )
   }
 }
