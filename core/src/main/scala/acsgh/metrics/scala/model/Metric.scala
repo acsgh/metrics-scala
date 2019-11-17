@@ -135,7 +135,7 @@ case class Percentile() extends Metric with Reset {
   }
 }
 
-case class Rate(period: Duration = 1 minute) extends Metric with Reset with Ticks {
+case class Rate(period: Duration = 1 minute, timeProvider: () => Instant = () => Instant.now()) extends Metric with Reset with Ticks {
   private val lock = new ReentrantReadWriteLock()
 
   private var times: List[Instant] = List()
@@ -143,12 +143,12 @@ case class Rate(period: Duration = 1 minute) extends Metric with Reset with Tick
   def rate: BigDecimal = lock.read(times.size)
 
   def hit(amount: Long = 1): Unit = lock.write {
-    val now = Instant.now()
+    val now = timeProvider()
     times = times ++ (0.toLong until amount).map(_ => now).toList
   }
 
   override def tick(): Unit = lock.write {
-    val cutTime = Instant.now().minusSeconds(period.toSeconds)
+    val cutTime = timeProvider().minusSeconds(period.toSeconds)
     times = times.filter(v => v.compareTo(cutTime) >= 0)
   }
 

@@ -57,18 +57,4 @@ class PercentileTest extends FlatSpec with Matchers {
     metric.update(10)
     metric.reset()
   }
-
-  it should "get value" in {
-    val metric = Percentile()
-    metric.update(10)
-    //    metric.values should be(
-    //      ListMap(
-    //        "events" -> metric.events,
-    //        "total" -> metric.total,
-    //        "min" -> metric.min,
-    //        "max" -> metric.max,
-    //        "mean" -> metric.mean,
-    //      )
-    //    )
-  }
 }

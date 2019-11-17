@@ -9,43 +9,64 @@ class SamplerTest extends FlatSpec with Matchers {
 
   "Sampler" should "start at 0" in {
     val metric = Sampler()
-    metric.events should be(0)
-    metric.total should be(0)
-    metric.min should be(0)
-    metric.max should be(0)
-    metric.mean should be(0)
+    metric.values should be(
+      ListMap(
+        "events" -> 0,
+        "total" -> 0.0,
+        "min" -> 0.0,
+        "max" -> 0.0,
+        "mean" -> 0.0
+      )
+    )
   }
 
   it should "update" in {
     val metric = Sampler()
-    metric.events should be(0)
-    metric.total should be(0)
-    metric.min should be(0)
-    metric.max should be(0)
-    metric.mean should be(0)
+
+    metric.values should be(
+      ListMap(
+        "events" -> 0,
+        "total" -> 0.0,
+        "min" -> 0.0,
+        "max" -> 0.0,
+        "mean" -> 0.0
+      )
+    )
     metric.update(10)
-    metric.events should be(1)
-    metric.total should be(10)
-    metric.min should be(10)
-    metric.max should be(10)
-    metric.mean should be(10)
+    metric.values should be(
+      ListMap(
+        "events" -> 1,
+        "total" -> 10.0,
+        "min" -> 10.0,
+        "max" -> 10.0,
+        "mean" -> 10.0
+      )
+    )
     metric.update(20)
-    metric.events should be(2)
-    metric.total should be(30)
-    metric.min should be(10)
-    metric.max should be(20)
-    metric.mean should be(15)
+    metric.values should be(
+      ListMap(
+        "events" -> 2,
+        "total" -> 30.0,
+        "min" -> 10.0,
+        "max" -> 20.0,
+        "mean" -> 15.0
+      )
+    )
   }
 
   it should "reset" in {
     val metric = Sampler()
     metric.update(10)
     metric.reset()
-    metric.events should be(0)
-    metric.total should be(0)
-    metric.min should be(0)
-    metric.max should be(0)
-    metric.mean should be(0)
+    metric.values should be(
+      ListMap(
+        "events" -> 0,
+        "total" -> 0.0,
+        "min" -> 0.0,
+        "max" -> 0.0,
+        "mean" -> 0.0
+      )
+    )
   }
 
   it should "get value" in {
