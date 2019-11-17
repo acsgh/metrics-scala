@@ -1,5 +1,7 @@
 package acsgh.metrics.scala
 
-class MetricRegistry {
+import com.acsgh.common.scala.log.LogSupport
+
+class MetricRegistry extends LogSupport{
 
 }

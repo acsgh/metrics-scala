@@ -4,32 +4,29 @@ import java.util.concurrent.TimeUnit
 
 import org.scalatest._
 
+import scala.collection.immutable.ListMap
 import scala.language.reflectiveCalls
 
 class TimerTest extends FlatSpec with Matchers {
 
-  "Metric" should "start at 0" in {
+  "Timer" should "start at 0" in {
     val metric = Timer()
 
     metric.values should be(
-      Map(
-        "total" -> 0,
-        "min" -> 0,
-        "mean" -> 0.0,
-        "max" -> 0,
-        "std-dev" -> 0.0,
-        "p05" -> 0,
-        "p25" -> 0,
-        "p50" -> 0,
-        "p75" -> 0,
-        "p90" -> 0,
-        "p99" -> 0,
-        "p995" -> 0,
+      ListMap(
         "events" -> 0,
-        "mean-rate" -> 0.0,
-        "1m-rate" -> 0.0,
-        "5m-rate" -> 0.0,
-        "15m-rate" -> 0.0
+        "total" -> 0.0,
+        "min" -> 0.0,
+        "max" -> 0.0,
+        "mean" -> 0.0,
+        "p-05%" -> 0.0,
+        "p-25%" -> 0.0,
+        "p-50%" -> 0.0,
+        "p-75%" -> 0.0,
+        "p-90%" -> 0.0,
+        "p-99%" -> 0.0,
+        "p-99.5%" -> 0.0,
+        "rate" -> 0.0
       )
     )
   }
@@ -47,24 +44,20 @@ class TimerTest extends FlatSpec with Matchers {
     metric.update(1, TimeUnit.SECONDS)
     Thread.sleep(2000)
     metric.values should be(
-      Map(
-        "total" -> 1000,
-        "min" -> 1000,
-        "mean" -> 1000.0,
-        "max" -> 1000,
-        "std-dev" -> 0.0,
-        "p05" -> 1000,
-        "p25" -> 1000,
-        "p50" -> 1000,
-        "p75" -> 1000,
-        "p90" -> 1000,
-        "p99" -> 1000,
-        "p995" -> 1000,
+      ListMap(
         "events" -> 1,
-        "mean-rate" -> 1.0,
-        "1m-rate" -> 1.0,
-        "5m-rate" -> 1.0,
-        "15m-rate" -> 1.0
+        "total" -> 1000.0,
+        "min" -> 1000.0,
+        "max" -> 1000.0,
+        "mean" -> 1000.0,
+        "p-05%" -> 1000.0,
+        "p-25%" -> 1000.0,
+        "p-50%" -> 1000.0,
+        "p-75%" -> 1000.0,
+        "p-90%" -> 1000.0,
+        "p-99%" -> 1000.0,
+        "p-99.5%" -> 1000.0,
+        "rate" -> 1
       )
     )
   }
@@ -75,23 +68,19 @@ class TimerTest extends FlatSpec with Matchers {
     metric.reset()
     metric.values should be(
       Map(
-        "total" -> 0,
-        "min" -> 0,
-        "mean" -> 0.0,
-        "max" -> 0,
-        "std-dev" -> 0.0,
-        "p05" -> 0,
-        "p25" -> 0,
-        "p50" -> 0,
-        "p75" -> 0,
-        "p90" -> 0,
-        "p99" -> 0,
-        "p995" -> 0,
         "events" -> 0,
-        "mean-rate" -> 0.0,
-        "1m-rate" -> 0.0,
-        "5m-rate" -> 0.0,
-        "15m-rate" -> 0.0
+        "total" -> 0.0,
+        "min" -> 0.0,
+        "max" -> 0.0,
+        "mean" -> 0.0,
+        "p-05%" -> 0.0,
+        "p-25%" -> 0.0,
+        "p-50%" -> 0.0,
+        "p-75%" -> 0.0,
+        "p-90%" -> 0.0,
+        "p-99%" -> 0.0,
+        "p-99.5%" -> 0.0,
+        "rate" -> 0
       )
     )
   }

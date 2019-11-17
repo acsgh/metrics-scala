@@ -1,7 +1,5 @@
 package acsgh.metrics.scala.model
 
-import java.net.URI
-
 import org.scalatest._
 
 import scala.language.reflectiveCalls
