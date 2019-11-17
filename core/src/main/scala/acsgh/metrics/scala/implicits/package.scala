@@ -1,5 +1,7 @@
 package acsgh.metrics.scala
 
+import java.util.regex.Pattern
+
 package object implicits {
 
   implicit class DoubleAdvanced(input: Double) {
@@ -10,6 +12,12 @@ package object implicits {
     }
 
     def sqrt: Double = Math.sqrt(input.doubleValue)
+  }
+
+  implicit class StringAdvanced(input: String) {
+    private val WHITESPACE = Pattern.compile("[\\s]+")
+
+    def withoutSpaces: String = WHITESPACE.matcher(input).replaceAll("-")
   }
 
 }
