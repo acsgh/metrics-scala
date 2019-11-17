@@ -1,5 +1,5 @@
 package acsgh.metrics.scala.model
 
-trait MetricsConfig {
+trait PublisherConfig {
   val publishIntervalSecond: Long
 }

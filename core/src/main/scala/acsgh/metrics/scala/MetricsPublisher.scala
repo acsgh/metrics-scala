@@ -6,7 +6,13 @@ import java.util.concurrent.{Executors, ScheduledExecutorService, TimeUnit}
 import acsgh.metrics.scala.model._
 import com.acsgh.common.scala.log.LogSupport
 
-abstract class MetricsPublisher[C <: MetricsConfig](private val registry: MetricsRegistry, metricsConfig: C) extends LogSupport {
+abstract class MetricsPublisher[C <: PublisherConfig]
+(
+  private val metricsRegistry: MetricsRegistry,
+  private val metricsConfig: C,
+  private val commonTags: Map[String, String] = Map(),
+  private val publishStrategy: PublishStrategy = PublishStrategy.Clean
+) extends LogSupport {
 
   private val started = new AtomicBoolean()
   private var executorService: ScheduledExecutorService = _
@@ -29,14 +35,14 @@ abstract class MetricsPublisher[C <: MetricsConfig](private val registry: Metric
       } finally {
         onStop()
         executorService.shutdown()
-        executorService = _
+        executorService = null
       }
     }
   }
 
   def publish(): Unit
 
-  def onStart(): Unit
+  protected def onStart(): Unit
 
-  def onStop(): Unit
+  protected def onStop(): Unit
 }

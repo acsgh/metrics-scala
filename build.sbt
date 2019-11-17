@@ -79,8 +79,7 @@ lazy val influxDb = (project in file("influx-db"))
     name := "influx-db",
     commonSettings,
     libraryDependencies ++= Seq(
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.9",
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.9"
+      "org.influxdb" % "influxdb-java" % "2.16"
     )
   )
   .dependsOn(core)
