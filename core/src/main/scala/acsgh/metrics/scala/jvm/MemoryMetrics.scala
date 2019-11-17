@@ -34,16 +34,16 @@ case class MemoryMetrics
     )
 
     val pools = memoryPools.foldLeft(Map[String, AnyVal]()) { (acc, pool) =>
-      val poolName = pool.getName.withoutSpaces
+      val poolName = pool.getName.withoutSpaces.replace("-'", ".").replace("'", "")
       val usage = pool.getUsage
 
       acc ++ Map(
-        s"$poolName.init" -> usage.getInit,
-        s"$poolName.used" -> usage.getUsed,
-        s"$poolName.max" -> usage.getMax,
-        s"$poolName.committed" -> usage.getCommitted,
-        s"$poolName.usage" -> (usage.getUsed / usage.getMax).scale(),
-        s"$poolName.used-after-gc" -> Option(pool.getCollectionUsage).map(_.getUsed).getOrElse(0)
+        s"pool.$poolName.init" -> usage.getInit,
+        s"pool.$poolName.used" -> usage.getUsed,
+        s"pool.$poolName.max" -> usage.getMax,
+        s"pool.$poolName.committed" -> usage.getCommitted,
+        s"pool.$poolName.usage" -> (usage.getUsed / usage.getMax).scale(),
+        s"pool.$poolName.used-after-gc" -> Option(pool.getCollectionUsage).map(_.getUsed).getOrElse(0)
       )
     }
 

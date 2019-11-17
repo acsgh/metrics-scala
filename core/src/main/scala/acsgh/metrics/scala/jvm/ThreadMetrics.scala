@@ -15,13 +15,13 @@ case class ThreadMetrics
     val allThreads = getAllThreads
 
     val threadsByState: Map[String, Int] =
-      Thread.State.values.map(v => (v.toString.toLowerCase + ".count", 0)).toMap ++
-        allThreads.groupBy(_.getThreadState).map(e => (e._1.toString.toLowerCase + ".count", e._2.size))
+      Thread.State.values.map(v => ("pool." + v.toString.toLowerCase + ".count", 0)).toMap ++
+        allThreads.groupBy(_.getThreadState).map(e => ("pool." +  e._1.toString.toLowerCase + ".count", e._2.size))
 
     ListMap(
       "count" -> threads.getThreadCount,
       "daemon.count" -> threads.getDaemonThreadCount,
-      "deadlock.count" -> threads.findDeadlockedThreads.length
+      "deadlock.count" -> Option(threads.findDeadlockedThreads).map(_.length).getOrElse(0)
     ) ++
       threadsByState
   }

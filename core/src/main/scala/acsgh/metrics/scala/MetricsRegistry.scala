@@ -59,7 +59,6 @@ case class MetricsRegistry
 
   def histogramUpdate(key: MetricKey, value: Long): Unit = registerMetricIfNotPresent(key, Histogram()).update(value)
 
-  //      clean((_, value) => !value.isInstanceOf[CleanAfterPublishMetric])
   def clean(validator: (MetricKey, Metric) => Boolean = (_, _) => true): Unit = metrics.filterInPlace(validator)
 
   def reset(validator: (MetricKey, Metric) => Boolean = (_, _) => true): Unit = metrics.filter(v => validator(v._1, v._2)).values
@@ -75,11 +74,12 @@ case class MetricsRegistry
     metrics.get(key).fold({
       metrics += (key -> metric)
       metric
-    }) {
-      case t: T =>
-        t
-      case storedMetric =>
+    }) { storedMetric =>
+      if (storedMetric.getClass == metric.getClass) {
+        storedMetric.asInstanceOf[T]
+      } else {
         throw new IllegalArgumentException(s"Metric $key is already register as ${storedMetric.getClass.getSimpleName}")
+      }
     }
   }
 }
