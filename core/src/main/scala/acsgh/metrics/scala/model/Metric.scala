@@ -11,6 +11,10 @@ import com.acsgh.common.scala.lock.ReentrantReadWriteLock
 import scala.collection.immutable.ListMap
 import scala.concurrent.duration.{Duration, TimeUnit, _}
 
+case class MetricKey(name: String, tags: Map[String, String] = Map())
+
+case class MetricSnapshot(key: MetricKey, timeStamp: Instant, values: Map[String, AnyVal])
+
 trait Metric {
   def values: Map[String, AnyVal]
 
