@@ -47,7 +47,7 @@ case class Counter() extends Metric with Reset {
   override def values: Map[String, AnyVal] = Map("count" -> _count.get())
 }
 
-case class Sampling() extends Metric with Reset {
+case class Sampler() extends Metric with Reset {
   private val lock = new ReentrantReadWriteLock()
 
   private var _total: BigDecimal = 0
@@ -127,7 +127,7 @@ case class Percentile() extends Metric with Reset {
 
     val count = _values.size
     if (count > 0) {
-      val index: Int = (percentile * (count - 1)).toInt
+      val index: Int = Math.max(0, ((percentile / 100) * count).ceil.toInt - 1)
       _values.get(index)
     } else {
       0
@@ -164,7 +164,7 @@ case class Rate(period: Duration = 1 minute) extends Metric with Reset with Tick
 }
 
 case class Timer() extends Metric with Reset {
-  private val summary: Sampling = Sampling()
+  private val summary: Sampler = Sampler()
   private val percentile: Percentile = Percentile()
   private val rate: Rate = Rate()
 
@@ -189,7 +189,7 @@ case class Timer() extends Metric with Reset {
 }
 
 case class Meter() extends Metric with Reset with Ticks {
-  private val sampling = Sampling()
+  private val sampling = Sampler()
   private val rate = Rate()
 
   def hit(amount: Long = 0): Unit = {
@@ -209,7 +209,7 @@ case class Meter() extends Metric with Reset with Ticks {
 }
 
 case class Histogram() extends Metric with Reset {
-  private val summary: Sampling = Sampling()
+  private val summary: Sampler = Sampler()
   private val percentile: Percentile = Percentile()
 
   def update(value: BigDecimal): Unit = {
